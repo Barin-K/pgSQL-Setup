@@ -1,4 +1,4 @@
-name: Deploy pgSQL Database Script
+name: Deploy pgSQL DB Script
 
 on:
   push:
