@@ -39,6 +39,9 @@ jobs:
           echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
           echo "VIEW_PASS=${{ secrets.VIEW_PASS }}" >> $GITHUB_ENV
 
+      - name: Make the DB script executable
+        run: chmod +x ./pgsql.sh
+
       - name: Run Database Setup Script
         run: ./pgsql.sh
 
