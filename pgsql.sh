@@ -31,7 +31,7 @@ fi
 
 # Variables: Adjust these if needed.
 DB_NAME="books_db"
-SUPERUSER="$(whoami)"  # Adjust if your PostgreSQL superuser is different.
+SUPERUSER="postgres"  # Adjust if your PostgreSQL superuser is different.
 ADMIN_USER="books_admin"
 VIEW_USER="books_view"
 
