@@ -37,18 +37,21 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Set Environment Variables 
+      - name: Set Environment Variables
         run: |
           echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
           echo "VIEW_PASS=${{ secrets.VIEW_PASS }}" >> $GITHUB_ENV
-          echo "PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
-
-      - name: Set PostgreSQL connection environment variables
-        run: |
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "PGUSER=postgres" >> $GITHUB_ENV
           echo "PGHOST=127.0.0.1" >> $GITHUB_ENV
           echo "PGPORT=5432" >> $GITHUB_ENV
-          echo "PGUSER=postgres" >> $GITHUB_ENV
-          echo "PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Debug Connection
+        run: |
+          echo "Current user: $(whoami)"
+          echo "PGUSER is set to: $PGUSER"
+          echo "Testing PostgreSQL connection..."
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h 127.0.0.1 -p 5432 -U postgres -c "\l"
 
       - name: Make the DB script executable
         run: chmod +x ./pgsql.sh
