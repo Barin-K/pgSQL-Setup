@@ -47,7 +47,7 @@ log_message "Database ${DB_NAME} created successfully."
 log_message "Setting up the database schema, roles, advanced features, and sample data..."
 
 # Create the books table with timestamp columns.
-psql -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 CREATE TABLE IF NOT EXISTS books (
     book_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -62,7 +62,7 @@ EOF
 log_message "Books table created."
 
 #  Create roles and grant privileges using environment variables for passwords.
-psql -U ${SUPERUSER} -d ${DB_NAME} <<EOF
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<EOF
 DO
 \$do\$
 BEGIN
@@ -85,7 +85,7 @@ EOF
 log_message "Roles created and privileges granted."
 
 # Create a trigger function to automatically update the updated_at column.
-psql -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -103,7 +103,7 @@ EOF
 log_message "Trigger and function for auto-updating 'updated_at' column created."
 
 # Create a view to aggregate and format book details.
-psql -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 CREATE OR REPLACE VIEW book_details AS
 SELECT 
     book_id,
@@ -117,7 +117,7 @@ FROM books;
 EOF
 
 # Grant privileges on the view for both roles.
-psql -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 GRANT SELECT ON book_details TO books_admin;
 GRANT SELECT ON book_details TO books_view;
 EOF
@@ -125,7 +125,7 @@ EOF
 log_message "View 'book_details' created."
 
 #  Insert sample data for testing.
-psql -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 INSERT INTO books (title, sub_title, author, publisher)
 VALUES 
     ('Terraform Up & Running', 'Writing Infrastructure as Code', 'Yevgeniy Brikman', 'O''Reilly Media'),
