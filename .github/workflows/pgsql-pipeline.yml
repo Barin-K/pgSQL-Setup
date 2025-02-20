@@ -39,6 +39,10 @@ jobs:
 
       - name: Set Environment Variables
         run: |
+          export PGPASSWORD="${{ secrets.POSTGRES_PASSWORD }}"
+          export PGUSER="postgres"
+          export PGHOST="127.0.0.1"
+          export PGPORT="5432"
           echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
           echo "VIEW_PASS=${{ secrets.VIEW_PASS }}" >> $GITHUB_ENV
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
