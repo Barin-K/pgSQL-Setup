@@ -39,8 +39,8 @@ log_message "Creating database ${DB_NAME}..."
 
 
 # Drop and create database
-psql -h localhost -U ${SUPERUSER} -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};" || { log_error "Failed to drop database ${DB_NAME}"; exit 1; }
-psql -h localhost -U ${SUPERUSER} -d postgres -c "CREATE DATABASE ${DB_NAME};" || { log_error "Failed to create database ${DB_NAME}"; exit 1; }
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};" || { log_error "Failed to drop database ${DB_NAME}"; exit 1; }
+psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "CREATE DATABASE ${DB_NAME};" || { log_error "Failed to create database ${DB_NAME}"; exit 1; }
 
 log_message "Database ${DB_NAME} created successfully."
 
