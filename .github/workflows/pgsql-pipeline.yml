@@ -1,0 +1,69 @@
+name: Deploy pgSQL DB Script
+
+on:
+  push:
+    branches: [ ci-cd ]
+  pull_request:
+    branches: [ ci-cd ]
+  workflow_dispatch:  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Start pgSQL  Container
+        run: |
+          docker run -d \
+            --name postgres-test \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            -p 5432:5432 \
+            postgres:14
+
+      - name: Wait for pgSQL to be Ready
+        run: |
+          echo "Waiting for PostgreSQL to be available..."
+          until docker exec postgres-test pg_isready -U ${{ secrets.POSTGRES_USER }}; do
+            sleep 1
+          done
+          echo "PostgreSQL is ready!"
+              # Optional extra wait
+          sleep 5
+
+      - name: Install PostgreSQL Client
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Set Environment Variables
+        run: |
+          export PGPASSWORD="${{ secrets.POSTGRES_PASSWORD }}"
+          export PGUSER="postgres"
+          export PGHOST="127.0.0.1"
+          export PGPORT="5432"
+          echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
+          echo "VIEW_PASS=${{ secrets.VIEW_PASS }}" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "PGUSER=postgres" >> $GITHUB_ENV
+          echo "PGHOST=127.0.0.1" >> $GITHUB_ENV
+          echo "PGPORT=5432" >> $GITHUB_ENV
+
+      - name: Debug Connection
+        run: |
+          echo "Current user: $(whoami)"
+          echo "PGUSER is set to: $PGUSER"
+          echo "Testing PostgreSQL connection..."
+          PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }} psql -h 127.0.0.1 -p 5432 -U postgres -c "\l"
+
+      - name: Make the DB script executable
+        run: chmod +x ./pgsql.sh
+
+      - name: Run Database Setup Script
+        run: ./pgsql.sh
+
+      - name: Clean Up pgSQL Container
+        run: |
+          docker stop postgres-test
+          docker rm postgres-test
