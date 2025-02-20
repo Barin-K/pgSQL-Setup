@@ -22,7 +22,7 @@ jobs:
             -p 5432:5432 \
             postgres:14
 
-      - name: Wait for PostgreSQL to be Ready
+      - name: Wait for pgSQL to be Ready
         run: |
           echo "Waiting for PostgreSQL to be available..."
           until docker exec postgres-test pg_isready -U ${{ secrets.POSTGRES_USER }}; do
