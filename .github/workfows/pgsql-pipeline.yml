@@ -1,0 +1,48 @@
+name: Deploy pgSQL Database Script
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Start PostgreSQL Container
+        run: |
+          docker run -d \
+            --name postgres-test \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            -p 5432:5432 \
+            postgres:14
+
+      - name: Wait for PostgreSQL to be Ready
+        run: |
+          echo "Waiting for PostgreSQL to be available..."
+          until docker exec postgres-test pg_isready -U ${{ secrets.POSTGRES_USER }}; do
+            sleep 1
+          done
+          echo "PostgreSQL is ready!"
+
+      - name: Install PostgreSQL Client
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Set Environment Variables for App
+        run: |
+          echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
+          echo "VIEW_PASS=${{ secrets.VIEW_PASS }}" >> $GITHUB_ENV
+
+      - name: Run Database Setup Script
+        run: ./pgsql.sh
+
+      - name: Clean Up pgSQL Container
+        run: |
+          docker stop postgres-test
+          docker rm postgres-test
