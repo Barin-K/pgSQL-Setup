@@ -41,6 +41,11 @@ jobs:
           echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
           echo "VIEW_PASS=${{ secrets.VIEW_PASS }}" >> $GITHUB_ENV
 
+      - name: Set PostgreSQL connection environment variables
+        run: |
+         echo "PGHOST=127.0.0.1" >> $GITHUB_ENV
+         echo "PGPORT=5432" >> $GITHUB_ENV
+
       - name: Make the DB script executable
         run: chmod +x ./pgsql.sh
 
