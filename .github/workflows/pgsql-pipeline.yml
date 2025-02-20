@@ -29,6 +29,8 @@ jobs:
             sleep 1
           done
           echo "PostgreSQL is ready!"
+              # Optional extra wait
+          sleep 5
 
       - name: Install PostgreSQL Client
         run: |
