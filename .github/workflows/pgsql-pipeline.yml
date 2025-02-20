@@ -18,7 +18,7 @@ jobs:
         run: |
           docker run -d \
             --name postgres-test \
-            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_USER=postgres \
             -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             -p 5432:5432 \
             postgres:14
@@ -37,10 +37,11 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Set Environment Variables for App
+      - name: Set Environment Variables 
         run: |
           echo "ADMIN_PASS=${{ secrets.ADMIN_PASS }}" >> $GITHUB_ENV
           echo "VIEW_PASS=${{ secrets.VIEW_PASS }}" >> $GITHUB_ENV
+          echo "PGPASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Set PostgreSQL connection environment variables
         run: |
