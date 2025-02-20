@@ -2,9 +2,9 @@ name: Deploy pgSQL Database Script
 
 on:
   push:
-    branches: [ main ]
+    branches: [ ci-cd ]
   pull_request:
-    branches: [ main ]
+    branches: [ ci-cd ]
 
 jobs:
   deploy:
