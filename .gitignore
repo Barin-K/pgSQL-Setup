@@ -1,0 +1,11 @@
+# Ignore generated credentials file
+db_credentials.txt
+
+# Ignore any log files
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+
+# Ignore temporary files
+*.tmp
