@@ -31,16 +31,20 @@ fi
 
 # Variables: Adjust these if needed.
 DB_NAME="books_db"
-SUPERUSER="postgres"  # Adjust if your PostgreSQL superuser is different.
-ADMIN_USER="books_admin"
-VIEW_USER="books_view"
+# SUPERUSER="postgres"  # Adjust if your PostgreSQL superuser is different.
+# ADMIN_USER="books_admin"
+# VIEW_USER="books_view"
 
 log_message "Creating database ${DB_NAME}..."
 
 
 # Drop and create database
-psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};" || { log_error "Failed to drop database ${DB_NAME}"; exit 1; }
-psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "CREATE DATABASE ${DB_NAME};" || { log_error "Failed to create database ${DB_NAME}"; exit 1; }
+# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};" || { log_error "Failed to drop database ${DB_NAME}"; exit 1; }
+# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "CREATE DATABASE ${DB_NAME};" || { log_error "Failed to create database ${DB_NAME}"; exit 1; }
+
+psql -h 127.0.0.1 -p 5432 -U postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};" || { log_error "Failed to drop database ${DB_NAME}"; exit 1; }
+psql -h 127.0.0.1 -p 5432 -U postgres -c "CREATE DATABASE ${DB_NAME};" || { log_error "Failed to create database ${DB_NAME}"; exit 1; }
+
 
 log_message "Database ${DB_NAME} created successfully."
 
