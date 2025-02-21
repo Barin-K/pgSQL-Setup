@@ -66,7 +66,6 @@ EOF
 log_message "Books table created."
 
 #  Create roles and grant privileges using environment variables for passwords.
-# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<EOF
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d "${DB_NAME}" <<'EOF'
 DO
 \$do\$
@@ -129,7 +128,7 @@ EOF
 
 log_message "View 'book_details' created."
 
-#  Insert sample data for testing.
+# sample data for testing.
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d "${DB_NAME}" <<'EOF'
 INSERT INTO books (title, sub_title, author, publisher)
 VALUES 
