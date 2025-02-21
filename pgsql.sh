@@ -37,17 +37,12 @@ log_message "PGPORT: $PGPORT"
 
 # Variables: Adjust these if needed.
 DB_NAME="books_db"
-# SUPERUSER="postgres"  # Adjust if your PostgreSQL superuser is different.
-# ADMIN_USER="books_admin"
-# VIEW_USER="books_view"
+
 
 log_message "Creating database ${DB_NAME}..."
 
 
 # Drop and create database
-# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};" || { log_error "Failed to drop database ${DB_NAME}"; exit 1; }
-# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d postgres -c "CREATE DATABASE ${DB_NAME};" || { log_error "Failed to create database ${DB_NAME}"; exit 1; }
-
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME};" || { log_error "Failed to drop database ${DB_NAME}"; exit 1; }
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d postgres -c "CREATE DATABASE ${DB_NAME};" || { log_error "Failed to create database ${DB_NAME}"; exit 1; }
 
@@ -95,7 +90,6 @@ EOF
 log_message "Roles created and privileges granted."
 
 # Create a trigger function to automatically update the updated_at column.
-# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d "${DB_NAME}" <<'EOF'
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -114,7 +108,6 @@ EOF
 log_message "Trigger and function for auto-updating 'updated_at' column created."
 
 # Create a view to aggregate and format book details.
-# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d "${DB_NAME}" <<'EOF'
 CREATE OR REPLACE VIEW book_details AS
 SELECT 
@@ -129,7 +122,6 @@ FROM books;
 EOF
 
 # Grant privileges on the view for both roles.
-# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d "${DB_NAME}" <<'EOF'
 GRANT SELECT ON book_details TO books_admin;
 GRANT SELECT ON book_details TO books_view;
@@ -138,7 +130,6 @@ EOF
 log_message "View 'book_details' created."
 
 #  Insert sample data for testing.
-# psql -h 127.0.0.1 -p 5432 -U ${SUPERUSER} -d ${DB_NAME} <<'EOF'
 PGPASSWORD="${POSTGRES_PASSWORD}" psql -U postgres -h 127.0.0.1 -p 5432 -d "${DB_NAME}" <<'EOF'
 INSERT INTO books (title, sub_title, author, publisher)
 VALUES 
